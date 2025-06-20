@@ -1,11 +1,21 @@
 import React from 'react'
+import HistoryList from './_components/HistoryList'
+import { Button } from '@/components/ui/button'
+import { IconPlus } from '@tabler/icons-react'
+import DoctorsAgentList from './_components/DoctorsAgentList'
+import AddNewSessionDialog from './_components/AddNewSessionDialog'
 
-function page() {
+function Dashboard() {
   return (
     <div>
-      
+      <div className='flex justify-between items-center'>
+        <h2 className='font-bold text-2xl'>My Dashboard</h2>
+        <AddNewSessionDialog/>
+      </div>
+      <HistoryList/>
+      <DoctorsAgentList/>
     </div>
   )
 }
 
-export default page
+export default Dashboard
