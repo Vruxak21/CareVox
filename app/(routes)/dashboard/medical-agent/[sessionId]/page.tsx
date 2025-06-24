@@ -1,20 +1,31 @@
 "use client";
 import axios from "axios";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import React, { useEffect, useState, useRef } from "react";
 import { doctorAgent } from "../../_components/DoctorAgentCard";
-import { Phone, PhoneOff, Loader2 } from "lucide-react";
+import { Phone, PhoneOff, Loader2, Loader } from "lucide-react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import Vapi from "@vapi-ai/web";
+import { toast } from "sonner";
 
-type SessionDetail = {
+export type SessionDetail = {
   id: number;
   notes: string;
   sessionId: string;
   report: JSON;
   selectedDoctor: doctorAgent;
   createdOn: string;
+  agent: string;
+  user: string;
+  timestamp: string;
+  chiefComplaint: string;
+  summary: string;
+  symptoms: string;
+  duration: string;
+  severity: string;
+  medicationsMentioned: string;
+  recommendations: string;
 };
 
 type messages = {
@@ -32,7 +43,18 @@ function MedicalVoiceAgent() {
   const [liveTranscript, setLiveTranscript] = useState<string>();
   const [messages, setMessages] = useState<messages[]>([]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  // const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const router = useRouter();
+
+  // Store event handler references
+  const eventHandlersRef = useRef({
+    onCallStart: null as any,
+    onCallEnd: null as any,
+    onMessage: null as any,
+    onSpeechStart: null as any,
+    onSpeechEnd: null as any,
+    onError: null as any
+  });
 
   useEffect(() => {
     sessionId && GetSessionDetails();
@@ -72,7 +94,7 @@ function MedicalVoiceAgent() {
     const VapiAgentConfig = {
       name: "AI Medical Doctor Voice Agent",
       firstMessage:
-        "Hi there! I'm your AI Medical Assistant. T'm here to help you with any health questions or concerns you might have today. How are you feeling?",
+        "Hi there! I'm your AI Medical Assistant. I'm here to help you with any health questions or concerns you might have today. How are you feeling?",
       transcriber: {
         provider: "assembly-ai",
         language: "en",
@@ -93,22 +115,20 @@ function MedicalVoiceAgent() {
       },
     };
 
-    //@ts-ignore
-    vapi.start(VapiAgentConfig);
-
-    vapi.on("call-start", () => {
+    // Define event handlers and store references
+    eventHandlersRef.current.onCallStart = () => {
       console.log("Call started");
       setCallStarted(true);
       setIsConnecting(false);
-    });
+    };
 
-    vapi.on("call-end", () => {
+    eventHandlersRef.current.onCallEnd = () => {
       setCallStarted(false);
       setIsConnecting(false);
       console.log("Call ended");
-    });
+    };
 
-    vapi.on("message", (message) => {
+    eventHandlersRef.current.onMessage = (message: any) => {
       if (message.type === "transcript") {
         const { role, transcriptType, transcript } = message;
         console.log(`${message.role}: ${message.transcript}`);
@@ -124,37 +144,90 @@ function MedicalVoiceAgent() {
           setCurrentRole(null);
         }
       }
-    });
+    };
 
-    vapi.on("speech-start", () => {
+    eventHandlersRef.current.onSpeechStart = () => {
       console.log("Assistant started speaking");
       setCurrentRole("Assistant");
-    });
+    };
 
-    vapi.on("speech-end", () => {
+    eventHandlersRef.current.onSpeechEnd = () => {
       console.log("Assistant stopped speaking");
       setCurrentRole("User");
-    });
+    };
 
-    // Handle connection errors
-    vapi.on("error", (error) => {
+    eventHandlersRef.current.onError = (error: any) => {
       console.log("Vapi error:", error);
       setIsConnecting(false);
       setCallStarted(false);
-    });
+    };
+
+    // Register event listeners
+    vapi.on("call-start", eventHandlersRef.current.onCallStart);
+    vapi.on("call-end", eventHandlersRef.current.onCallEnd);
+    vapi.on("message", eventHandlersRef.current.onMessage);
+    vapi.on("speech-start", eventHandlersRef.current.onSpeechStart);
+    vapi.on("speech-end", eventHandlersRef.current.onSpeechEnd);
+    vapi.on("error", eventHandlersRef.current.onError);
+
+    //@ts-ignore
+    vapi.start(VapiAgentConfig);
   };
 
-  const EndCall = () => {
+  const EndCall = async () => {
+    setLoading(true);
     if (!vapiInstance) return;
+    
+    // Remove event listeners using stored references
+    if (eventHandlersRef.current.onCallStart) {
+      vapiInstance.off("call-start", eventHandlersRef.current.onCallStart);
+    }
+    if (eventHandlersRef.current.onCallEnd) {
+      vapiInstance.off("call-end", eventHandlersRef.current.onCallEnd);
+    }
+    if (eventHandlersRef.current.onMessage) {
+      vapiInstance.off("message", eventHandlersRef.current.onMessage);
+    }
+    if (eventHandlersRef.current.onSpeechStart) {
+      vapiInstance.off("speech-start", eventHandlersRef.current.onSpeechStart);
+    }
+    if (eventHandlersRef.current.onSpeechEnd) {
+      vapiInstance.off("speech-end", eventHandlersRef.current.onSpeechEnd);
+    }
+    if (eventHandlersRef.current.onError) {
+      vapiInstance.off("error", eventHandlersRef.current.onError);
+    }
+
     vapiInstance.stop();
-    vapiInstance.off("call-start");
-    vapiInstance.off("call-end");
-    vapiInstance.off("message");
-    vapiInstance.off("error");
     setCallStarted(false);
     setIsConnecting(false);
     setVapiInstance(null);
+    
+    // Clear event handler references
+    eventHandlersRef.current = {
+      onCallStart: null,
+      onCallEnd: null,
+      onMessage: null,
+      onSpeechStart: null,
+      onSpeechEnd: null,
+      onError: null
+    };
+    
+    const result = await GenerateReport();
+    setLoading(false);
+    toast.success('Your report is generated!')
+    router.replace('/dashboard');
   };
+
+  const GenerateReport = async () => {
+    const result = await axios.post('/api/medical-report', {
+      messages: messages,
+      sessionDetail: sessionDetail,
+      sessionId: sessionId
+    })
+    console.log(result.data);
+    return result.data;
+  }
 
   return (
     <div className="p-5 border rounded-3xl bg-secondary">
@@ -211,15 +284,15 @@ function MedicalVoiceAgent() {
 
           {/* Connection/Disconnection Button */}
           {!callStarted && !isConnecting && (
-            <Button className="mt-20" onClick={StartCall}>
-              <Phone />
+            <Button className="mt-20" onClick={StartCall} disabled={loading}>
+              {loading ? <Loader className="animate-spin"/> : <Phone />}
               Connect to Doctor
             </Button>
           )}
 
           {callStarted && (
-            <Button variant={"destructive"} className="mt-20" onClick={EndCall}>
-              <PhoneOff />
+            <Button variant={"destructive"} className="mt-20" onClick={EndCall} disabled={loading}>
+              {loading ? <Loader className="animate-spin"/> : <PhoneOff />}
               Disconnect
             </Button>
           )}
