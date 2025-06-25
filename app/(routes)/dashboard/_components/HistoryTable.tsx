@@ -12,16 +12,34 @@ import { SessionDetail } from "../medical-agent/[sessionId]/page";
 import { Button } from "@/components/ui/button";
 import moment from 'moment';
 import ViewReportDialog from "./ViewReportDialog";
+import Link from "next/link";
+import { IconArrowRight } from "@tabler/icons-react";
 
 type Props = {
   historyList: SessionDetail[];
+  showAll?: boolean; // New prop to control display mode
 };
 
-function HistoryTable({ historyList }: Props) {
+function HistoryTable({ historyList, showAll = false }: Props) {
+  // Show only latest 4 records when not in showAll mode
+  const displayList = showAll ? historyList : historyList.slice(0, 4);
+  const hasMoreRecords = historyList.length > 4;
+
   return (
     <div>
+      {!showAll && hasMoreRecords && (
+        <div className="mt-4 text-right">
+          <Link href="/dashboard/history">
+            <Button variant="ghost">
+              View All History ({historyList.length} total) <IconArrowRight/>
+            </Button>
+          </Link>
+        </div>
+      )}
       <Table>
-        <TableCaption>Previous Consultation Reports</TableCaption>
+        <TableCaption>
+          {showAll ? "All Consultation Reports" : "Recent Consultation Reports"}
+        </TableCaption>
         <TableHeader>
           <TableRow>
             <TableHead>AI Medical Specialist</TableHead>
@@ -31,7 +49,7 @@ function HistoryTable({ historyList }: Props) {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {historyList.map((record: SessionDetail, index: number) => (
+          {displayList.map((record: SessionDetail, index: number) => (
             <TableRow key={index}>
               <TableCell className="font-medium">{record.selectedDoctor.specialist}</TableCell>
               <TableCell>{record.notes}</TableCell>
@@ -45,4 +63,4 @@ function HistoryTable({ historyList }: Props) {
   );
 }
 
-export default HistoryTable;
+export default HistoryTable

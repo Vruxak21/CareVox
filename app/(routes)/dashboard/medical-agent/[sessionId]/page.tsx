@@ -16,16 +16,6 @@ export type SessionDetail = {
   report: JSON;
   selectedDoctor: doctorAgent;
   createdOn: string;
-  agent: string;
-  user: string;
-  timestamp: string;
-  chiefComplaint: string;
-  summary: string;
-  symptoms: string;
-  duration: string;
-  severity: string;
-  medicationsMentioned: string;
-  recommendations: string;
 };
 
 type messages = {

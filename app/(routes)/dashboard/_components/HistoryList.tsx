@@ -8,18 +8,22 @@ import axios from "axios";
 import HistoryTable from "./HistoryTable";
 import { SessionDetail } from "../medical-agent/[sessionId]/page";
 
-function HistoryList() {
+type Props = {
+  showAll?: boolean; // New prop to determine if showing all records
+};
+
+function HistoryList({ showAll = false }: Props) {
   const [historyList, setHistoryList] = useState<SessionDetail[]>([]);
 
-  useEffect(()=>{
+  useEffect(() => {
     GetHistoryList();
-  },[])
+  }, []);
 
   const GetHistoryList = async () => {
     const result = await axios.get('/api/session-chat?sessionId=all');
     console.log(result.data);
     setHistoryList(result.data);
-  }
+  };
 
   return (
     <div className="mt-10">
@@ -33,11 +37,11 @@ function HistoryList() {
           />
           <h2 className="font-bold text-xl mt-2">No Recent Consultations</h2>
           <p>It looks like you haven't consulted with any doctors yet</p>
-          <AddNewSessionDialog/>
+          <AddNewSessionDialog />
         </div>
       ) : (
         <div>
-          <HistoryTable historyList={historyList}/>
+          <HistoryTable historyList={historyList} showAll={showAll} />
         </div>
       )}
     </div>
