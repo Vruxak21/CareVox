@@ -58,7 +58,7 @@ function ViewReportDialog({ record }: props) {
             <DialogContent className="max-w-xl max-h-[90vh] overflow-hidden">
                 <DialogHeader>
                     <DialogTitle asChild>
-                        <h2 className="text-2xl font-semibold text-center text-emerald-500">🩺 Medical AI Voice Agent Report</h2>
+                        <h2 className="text-2xl font-semibold text-center text-blue-500">🩺 Medical AI Voice Agent Report</h2>
                     </DialogTitle>
                     <DialogDescription asChild>
                         <div className="mt-6 space-y-6 text-gray-800 overflow-y-auto max-h-[70vh] pr-2">
@@ -74,7 +74,7 @@ function ViewReportDialog({ record }: props) {
                                 <>
                                     {/* Session Info */}
                                     <div>
-                                        <h3 className="text-emerald-500 text-lg font-semibold border-b pb-1">Session Info</h3>
+                                        <h3 className="text-blue-500 text-lg font-semibold border-b pb-1">Session Info</h3>
                                         <div className="grid grid-cols-2 gap-y-2 mt-2 text-sm">
                                             <div><span className="font-semibold">Doctor:</span> {record.selectedDoctor.specialist}</div>
                                             <div><span className="font-semibold">User:</span> {userName}</div>
@@ -85,25 +85,25 @@ function ViewReportDialog({ record }: props) {
 
                                     {/* Chief Complaint */}
                                     <div>
-                                        <h3 className="text-emerald-500 text-lg font-semibold border-b pb-1">Chief Complaint</h3>
+                                        <h3 className="text-blue-500 text-lg font-semibold border-b pb-1">Chief Complaint</h3>
                                         {renderText(report?.chiefComplaint)}
                                     </div>
 
                                     {/* Summary */}
                                     <div>
-                                        <h3 className="text-emerald-500 text-lg font-semibold border-b pb-1">Summary</h3>
+                                        <h3 className="text-blue-500 text-lg font-semibold border-b pb-1">Summary</h3>
                                         {renderText(report?.summary)}
                                     </div>
 
                                     {/* Symptoms */}
                                     <div>
-                                        <h3 className="text-emerald-500 text-lg font-semibold border-b pb-1">Symptoms</h3>
+                                        <h3 className="text-blue-500 text-lg font-semibold border-b pb-1">Symptoms</h3>
                                         {renderList(report?.symptoms)}
                                     </div>
 
                                     {/* Duration & Severity */}
                                     <div>
-                                        <h3 className="text-emerald-500 text-lg font-semibold border-b pb-1">Duration & Severity</h3>
+                                        <h3 className="text-blue-500 text-lg font-semibold border-b pb-1">Duration & Severity</h3>
                                         <div className="grid grid-cols-2 gap-y-2 text-sm mt-2">
                                             <div><span className="font-semibold">Duration:</span> {report?.duration || "Not specified"}</div>
                                             <div><span className="font-semibold">Severity:</span> {report?.severity || "Not specified"}</div>
@@ -112,13 +112,13 @@ function ViewReportDialog({ record }: props) {
 
                                     {/* Medications Mentioned */}
                                     <div>
-                                        <h3 className="text-emerald-500 text-lg font-semibold border-b pb-1">Medications Mentioned</h3>
+                                        <h3 className="text-blue-500 text-lg font-semibold border-b pb-1">Medications Mentioned</h3>
                                         {renderList(report?.medicationsMentioned)}
                                     </div>
 
                                     {/* Recommendations */}
                                     <div>
-                                        <h3 className="text-emerald-500 text-lg font-semibold border-b pb-1">Recommendations</h3>
+                                        <h3 className="text-blue-500 text-lg font-semibold border-b pb-1">Recommendations</h3>
                                         {renderList(report?.recommendations)}
                                     </div>
                                 </>

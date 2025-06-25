@@ -9,7 +9,7 @@ import HistoryTable from "./HistoryTable";
 import { SessionDetail } from "../medical-agent/[sessionId]/page";
 
 type Props = {
-  showAll?: boolean; // New prop to determine if showing all records
+  showAll?: boolean;
 };
 
 function HistoryList({ showAll = false }: Props) {

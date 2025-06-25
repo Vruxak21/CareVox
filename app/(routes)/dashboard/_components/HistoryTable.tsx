@@ -17,11 +17,10 @@ import { IconArrowRight } from "@tabler/icons-react";
 
 type Props = {
   historyList: SessionDetail[];
-  showAll?: boolean; // New prop to control display mode
+  showAll?: boolean;
 };
 
 function HistoryTable({ historyList, showAll = false }: Props) {
-  // Show only latest 4 records when not in showAll mode
   const displayList = showAll ? historyList : historyList.slice(0, 4);
   const hasMoreRecords = historyList.length > 4;
 
