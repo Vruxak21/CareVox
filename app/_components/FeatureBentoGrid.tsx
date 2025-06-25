@@ -14,7 +14,7 @@ import { BentoGrid, BentoGridItem } from "@/components/ui/bento-grid";
 
 export default function FeatureBentoGrid() {
   return (
-    <BentoGrid className="max-w-4xl mx-auto md:auto-rows-[20rem]">
+    <BentoGrid className="max-w-5xl mx-auto md:auto-rows-[20rem] mb-10">
       {items.map((item, i) => (
         <BentoGridItem
           key={i}
@@ -187,32 +187,32 @@ const SkeletonFour = () => {
         className="h-full w-1/3 rounded-2xl bg-white p-4 dark:bg-black dark:border-white/[0.1] border border-neutral-200 flex flex-col items-center justify-center"
       >
         <img
-          src="https://pbs.twimg.com/profile_images/1417752099488636931/cs2R59eW_400x400.jpg"
+          src="doctor8.png"
           alt="avatar"
           height="100"
           width="100"
           className="rounded-full h-10 w-10"
         />
         <p className="sm:text-sm text-xs text-center font-semibold text-neutral-500 mt-4">
-          Just code in Vanilla Javascript
+          Helps with bone, joint, and muscle pain
         </p>
         <p className="border border-red-500 bg-red-100 dark:bg-red-900/20 text-red-600 text-xs rounded-full px-2 py-0.5 mt-4">
-          Delusional
+          Orthopedic
         </p>
       </motion.div>
       <motion.div className="h-full relative z-20 w-1/3 rounded-2xl bg-white p-4 dark:bg-black dark:border-white/[0.1] border border-neutral-200 flex flex-col items-center justify-center">
         <img
-          src="https://pbs.twimg.com/profile_images/1417752099488636931/cs2R59eW_400x400.jpg"
+          src="doctor2.png"
           alt="avatar"
           height="100"
           width="100"
           className="rounded-full h-10 w-10"
         />
         <p className="sm:text-sm text-xs text-center font-semibold text-neutral-500 mt-4">
-          Tailwind CSS is cool, you know
+          Expert in children's health, from babies to teens
         </p>
         <p className="border border-green-500 bg-green-100 dark:bg-green-900/20 text-green-600 text-xs rounded-full px-2 py-0.5 mt-4">
-          Sensible
+          Pediatrician
         </p>
       </motion.div>
       <motion.div
@@ -220,17 +220,17 @@ const SkeletonFour = () => {
         className="h-full w-1/3 rounded-2xl bg-white p-4 dark:bg-black dark:border-white/[0.1] border border-neutral-200 flex flex-col items-center justify-center"
       >
         <img
-          src="https://pbs.twimg.com/profile_images/1417752099488636931/cs2R59eW_400x400.jpg"
+          src="doctor4.png"
           alt="avatar"
           height="100"
           width="100"
           className="rounded-full h-10 w-10"
         />
         <p className="sm:text-sm text-xs text-center font-semibold text-neutral-500 mt-4">
-          I love angular, RSC, and Redux.
+          Supports mental health and emotional well-being
         </p>
         <p className="border border-orange-500 bg-orange-100 dark:bg-orange-900/20 text-orange-600 text-xs rounded-full px-2 py-0.5 mt-4">
-          Helpless
+          Psychologist
         </p>
       </motion.div>
     </motion.div>
@@ -273,22 +273,21 @@ const SkeletonFive = () => {
         className="flex flex-row rounded-2xl border border-neutral-100 dark:border-white/[0.2] p-2  items-start space-x-2 bg-white dark:bg-black"
       >
         <img
-          src="https://pbs.twimg.com/profile_images/1417752099488636931/cs2R59eW_400x400.jpg"
+          src="doctor3.png"
           alt="avatar"
           height="100"
           width="100"
           className="rounded-full h-10 w-10"
         />
         <p className="text-xs text-neutral-500">
-          There are a lot of cool framerworks out there like React, Angular,
-          Vue, Svelte that can make your life ....
+          Hi there. I'm your AI medical assistant. I'm here to help you with any health questions or concerns you might have today. How are you feeling?
         </p>
       </motion.div>
       <motion.div
         variants={variantsSecond}
         className="flex flex-row rounded-full border border-neutral-100 dark:border-white/[0.2] p-2 items-center justify-end space-x-2 w-3/4 ml-auto bg-white dark:bg-black"
       >
-        <p className="text-xs text-neutral-500">Use PHP.</p>
+        <p className="text-xs text-neutral-500">I'm experiencing itchiness in my eyes and they have turned red</p>
         <div className="h-6 w-6 rounded-full bg-gradient-to-r from-pink-500 to-violet-500 shrink-0" />
       </motion.div>
     </motion.div>
@@ -296,10 +295,10 @@ const SkeletonFive = () => {
 };
 const items = [
   {
-    title: "AI Content Generation",
+    title: "AI Medical Transcription",
     description: (
       <span className="text-sm">
-        Experience the power of AI in generating unique content.
+        Convert doctor-patient conversations into accurate medical transcripts in real-time.
       </span>
     ),
     header: <SkeletonOne />,
@@ -307,10 +306,10 @@ const items = [
     icon: <IconClipboardCopy className="h-4 w-4 text-neutral-500" />,
   },
   {
-    title: "Automated Proofreading",
+    title: "Clinical Error Detection",
     description: (
       <span className="text-sm">
-        Let AI handle the proofreading of your documents.
+        AI flags inconsistencies and possible medical errors in transcribed content.
       </span>
     ),
     header: <SkeletonTwo />,
@@ -318,10 +317,10 @@ const items = [
     icon: <IconFileBroken className="h-4 w-4 text-neutral-500" />,
   },
   {
-    title: "Contextual Suggestions",
+    title: "Context-Aware Recommendations",
     description: (
       <span className="text-sm">
-        Get AI-powered suggestions based on your writing context.
+        Provide contextual treatment or diagnosis suggestions based on conversations.
       </span>
     ),
     header: <SkeletonThree />,
@@ -329,10 +328,10 @@ const items = [
     icon: <IconSignature className="h-4 w-4 text-neutral-500" />,
   },
   {
-    title: "Sentiment Analysis",
+    title: "Patient Sentiment Monitoring",
     description: (
       <span className="text-sm">
-        Understand the sentiment of your text with AI analysis.
+        Analyze patient tone and emotion to assist doctors with empathetic communication.
       </span>
     ),
     header: <SkeletonFour />,
@@ -341,10 +340,10 @@ const items = [
   },
 
   {
-    title: "Text Summarization",
+    title: "Summarized Case Notes",
     description: (
       <span className="text-sm">
-        Summarize your lengthy documents with AI technology.
+        Automatically generate brief, actionable summaries of medical discussions.
       </span>
     ),
     header: <SkeletonFive />,

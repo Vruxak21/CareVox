@@ -6,7 +6,7 @@ import React from 'react'
 const menuOptions = [
     {
         id: 1,
-        name: 'Home',
+        name: 'Dashboard',
         path: '/dashboard'
     },
     {
@@ -22,14 +22,16 @@ const menuOptions = [
     {
         id: 4,
         name: 'Profile',
-        path: '/profile'
+        path: '/dashboard/profile'
     },
 ]
 
 function AppHeader() {
   return (
     <div className='flex items-center justify-between shadow p-4 px-10 md:px-20 lg:px-40'>
-      <Image src={'/logo.png'} alt="CareVox" width={150} height={150} />
+      <Link href={'/'}>
+        <Image src={'/logo.png'} alt="CareVox" width={150} height={150} />
+      </Link>
       <div className='hidden md:flex gap-15 items-center'>
         {menuOptions.map((option, index) => (
             <Link key={index} href={option.path}>

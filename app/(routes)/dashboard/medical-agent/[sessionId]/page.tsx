@@ -3,7 +3,7 @@ import axios from "axios";
 import { useParams, useRouter } from "next/navigation";
 import React, { useEffect, useState, useRef } from "react";
 import { doctorAgent } from "../../_components/DoctorAgentCard";
-import { Phone, PhoneOff, Loader2, Loader } from "lucide-react";
+import { Phone, PhoneOff, Loader2 } from "lucide-react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import Vapi from "@vapi-ai/web";
@@ -34,6 +34,9 @@ function MedicalVoiceAgent() {
   const [messages, setMessages] = useState<messages[]>([]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const [loading, setLoading] = useState(false);
+  const [generatingReport, setGeneratingReport] = useState(false);
+  const [callDuration, setCallDuration] = useState(0);
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
   const router = useRouter();
 
   // Store event handler references
@@ -49,6 +52,36 @@ function MedicalVoiceAgent() {
   useEffect(() => {
     sessionId && GetSessionDetails();
   }, [sessionId]);
+
+  const formatTime = (seconds: number) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+  };
+
+  useEffect(() => {
+    if (callStarted) {
+      // Start timer when call starts
+      timerRef.current = setInterval(() => {
+        setCallDuration(prev => prev + 1);
+      }, 1000);
+    } else {
+      // Clear timer when call ends
+      if (timerRef.current) {
+        clearInterval(timerRef.current);
+        timerRef.current = null;
+      }
+      // Reset duration when call ends
+      setCallDuration(0);
+    }
+
+    // Cleanup on unmount
+    return () => {
+      if (timerRef.current) {
+        clearInterval(timerRef.current);
+      }
+    };
+  }, [callStarted]);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -165,6 +198,7 @@ function MedicalVoiceAgent() {
   };
 
   const EndCall = async () => {
+    setGeneratingReport(true);
     setLoading(true);
     if (!vapiInstance) return;
     
@@ -204,6 +238,7 @@ function MedicalVoiceAgent() {
     };
     
     const result = await GenerateReport();
+    setGeneratingReport(false);
     setLoading(false);
     toast.success('Your report is generated!')
     router.replace('/dashboard');
@@ -227,7 +262,7 @@ function MedicalVoiceAgent() {
           {isConnecting && <Loader2 className="h-3 w-3 animate-spin" />}
           {getConnectionStatus()}
         </h2>
-        <h2 className="font-bold text-xl text-gray-400">00:00</h2>
+        <h2 className="font-bold text-xl text-gray-400">{formatTime(callDuration)}</h2>
       </div>
       {sessionDetail && (
         <div className="flex items-center flex-col mt-10">
@@ -273,16 +308,23 @@ function MedicalVoiceAgent() {
           </div>
 
           {/* Connection/Disconnection Button */}
-          {!callStarted && !isConnecting && (
-            <Button className="mt-20" onClick={StartCall} disabled={loading}>
-              {loading ? <Loader className="animate-spin"/> : <Phone />}
+          {!callStarted && !isConnecting && !generatingReport && (
+            <Button className="mt-20" onClick={StartCall}>
+              <Phone />
               Connect to Doctor
+            </Button>
+          )}
+
+          {generatingReport && (
+            <Button className="mt-20" disabled>
+              <Loader2 className="animate-spin" />
+              Generating Report
             </Button>
           )}
 
           {callStarted && (
             <Button variant={"destructive"} className="mt-20" onClick={EndCall} disabled={loading}>
-              {loading ? <Loader className="animate-spin"/> : <PhoneOff />}
+              {loading ? <Loader2 className="animate-spin"/> : <PhoneOff className="mr-2" />}
               Disconnect
             </Button>
           )}
